@@ -297,8 +297,8 @@ export default function Page() {
           <a href="#" className="nav-brand">
             <svg className="nav-logo" viewBox="0 0 32 32" aria-hidden="true">
               <rect width="32" height="32" rx="8" fill="#1546d9"/>
-              <circle cx="8" cy="8" r="4" fill="#f9b318" opacity="0.6"/>
-              <text x="16" y="22.5" fontFamily="system-ui" fontSize="16" fontWeight="800" fill="#edece6" textAnchor="middle" letterSpacing="-0.5">OS</text>
+              <path d="M16 6a10 10 0 0 1 0 20a10 10 0 0 1 0-20" stroke="#edece6" strokeWidth="2.5" strokeLinecap="round" fill="none" strokeDasharray="54 9" />
+              <circle cx="24" cy="8" r="2.5" fill="#f9b318" />
             </svg>
             The Outcast Syndicate
           </a>
@@ -319,13 +319,15 @@ export default function Page() {
       <div className="wrap">
         {/* Hero */}
         <section className="hero">
-          <span className="hero-badge">Freelance studio for makers</span>
-          <h1>We build. <em>You ship.</em></h1>
-          <p className="hero-sub">
+          <span className="hero-badge hero-stagger" style={{ animationDelay: "0.2s" }}>Freelance studio for makers</span>
+          <h1 className="hero-stagger" style={{ animationDelay: "0.45s" }}>We build.</h1>
+          <h1 className="hero-stagger hero-h1-yellow" style={{ animationDelay: "0.7s" }}>You ship.</h1>
+          <div className="hero-line hero-stagger" style={{ animationDelay: "0.9s" }} aria-hidden="true" />
+          <p className="hero-sub hero-stagger" style={{ animationDelay: "1.1s" }}>
             A freelance team for websites, video editing, copywriting, data entry, technical writing and more.
             Tell us what you need - we handle the rest.
           </p>
-          <div className="hero-ctas">
+          <div className="hero-ctas hero-stagger" style={{ animationDelay: "1.35s" }}>
             <a href="#contact" className="btn btn-primary">Get in touch ↗</a>
             <a href="#work" className="btn btn-secondary">See our work</a>
           </div>
