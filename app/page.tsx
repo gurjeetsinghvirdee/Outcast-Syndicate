@@ -1,220 +1,420 @@
-import Link from "next/link";
-import { BrowserFrame } from "@/components/BrowserFrame";
-import { Credits } from "@/components/Credits";
-import { EditSuite } from "@/components/edit-suite/EditSuite";
-import type { SuiteClip, SuiteLane } from "@/components/edit-suite/types";
-import { SlugLine } from "@/components/SlugLine";
-import { TrackRoster } from "@/components/TrackRoster";
-import { VideoFacade } from "@/components/VideoFacade";
-import {
-  getProject,
-  homeCut,
-  kindLabel,
-  measureLabel,
-  people,
-  personFor,
-  posterAlt,
-  posterUrl,
-  primaryRole,
-  projects,
-  projectsBy,
-  type FilmProject,
-  type Project,
-  type ProductProject,
-} from "@/content";
-import { site } from "@/content/site";
-import styles from "./page.module.css";
+"use client";
 
-const LEAD_IN = 3;
+import { useState, useEffect } from "react";
+import Image from "next/image";
 
-// Clip length on the cut, in seconds: long films hold longer than shorts.
-function clipLength(p: Project): number {
-  if (p.kind === "product") return 11;
-  if (p.strand === "Documentary") return 14;
-  if (p.strand === "Explainer" || p.strand === "Long-form vlog") return 11;
-  return 8;
-}
 
-function buildCut() {
-  let at = LEAD_IN;
-  const clips: SuiteClip[] = homeCut().map((p) => {
-    const person = personFor(p);
-    const length = clipLength(p);
-    const clip: SuiteClip = {
-      slug: p.slug,
-      title: p.title,
-      href: `/work/${p.slug}`,
-      track: person.track,
-      person: person.name,
-      personHref: `/people/${person.slug}`,
-      role: primaryRole(p),
-      kind: p.kind,
-      kindLabel: kindLabel(p),
-      measure: measureLabel(p),
-      poster: posterUrl(p.cover),
-      posterAlt: posterAlt(p),
-      start: at,
-      length,
-    };
-    at += length;
-    return clip;
-  });
-  const lanes: SuiteLane[] = people.map((person) => ({
-    track: person.track,
-    name: person.name,
-    href: `/people/${person.slug}`,
-    armed: projectsBy(person.slug).length === 0,
-  }));
-  return { clips, lanes, total: at + LEAD_IN };
-}
+function FloatingShapes() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
 
-export default function Home() {
-  const { clips, lanes, total } = buildCut();
-  const films = projects.filter((p) => p.kind === "film").length;
-  const builds = projects.filter((p) => p.kind === "product").length;
-  const badlaav = getProject("badlaav-campaign") as FilmProject;
-  const meridian = getProject("meridian") as ProductProject;
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.name,
-    url: site.url,
-    description: site.description,
-    member: people.map((p) => ({ "@type": "Person", name: p.name, knowsAbout: p.disciplines })),
-  };
+  if (!mounted) return null;
 
   return (
+    <div className="floats" aria-hidden="true">
+      <div className="float float-circle-lg" />
+      <div className="float float-dot" />
+      <div className="float float-ring" />
+      <div className="float float-square" />
+      <div className="float float-cross" />
+      <div className="float float-pill" />
+      <div className="float float-tri" />
+      <div className="float float-dot-sm-1" />
+      <div className="float float-dot-sm-2" />
+      <div className="float float-dot-sm-3" />
+      <div className="float float-ring-lg" />
+      <div className="float float-diamond" />
+      <svg className="float float-wave" viewBox="0 0 200 40" fill="none" stroke="#f9b318" strokeWidth="2.5" strokeLinecap="round">
+        <path d="M0 20 Q25 0 50 20 T100 20 T150 20 T200 20" />
+      </svg>
+    </div>
+  );
+}
+
+const services = [
+  { name: "Website Development", desc: "Responsive websites, landing pages, e-commerce stores and web apps.", icon: "M10 4h4v4h-4zM4 10h4v4H4zM16 10h4v4h-4zM10 16h4v4h-4zM10 10h4v4h-4z" },
+  { name: "Video Editing", desc: "YouTube videos, reels, promos, documentaries - raw footage to final cut.", icon: "M4 4h16v12H4zM9 8l6 4-6 4z" },
+  { name: "Copywriting", desc: "Ad copy, scripts, social media captions and brand messaging.", icon: "M6 4h12v16H6zM9 8h6M9 11h6M9 14h4" },
+  { name: "Data Entry & Processing", desc: "Accurate data entry, spreadsheet cleanup, survey and records processing.", icon: "M4 4h16v16H4zM4 10h16M12 4v16" },
+  { name: "Technical Writing", desc: "Documentation, tutorials, developer articles and how-to guides.", icon: "M8 2l-4 4v14h16V6l-4-4H8zM8 2v4H4M12 10v6M9 13h6" },
+  { name: "UI / UX Design", desc: "Interface design, prototyping and user experience for digital products.", icon: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM12 6l2 4h4l-3 3 1 5-4-2.5L8 18l1-5-3-3h4z" },
+  { name: "SEO & Digital Marketing", desc: "Search optimisation, keyword research, analytics and growth strategy.", icon: "M10 2a8 8 0 105.29 14.29l4.71 4.71 2-2-4.71-4.71A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z" },
+  { name: "Social Media Management", desc: "Content calendars, scheduling, engagement and channel growth.", icon: "M18 2H6a2 2 0 00-2 2v16l4-3h10a2 2 0 002-2V4a2 2 0 00-2-2zM8 9h8M8 13h5" },
+  { name: "App Development", desc: "Mobile and desktop apps - React Native, Flutter or PWA.", icon: "M7 2h10a1 1 0 011 1v18a1 1 0 01-1 1H7a1 1 0 01-1-1V3a1 1 0 011-1zM10 18h4" },
+  { name: "Graphic Design", desc: "Logos, thumbnails, banners, social media creatives and brand identity.", icon: "M12 2L2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5" },
+  { name: "Research & Analysis", desc: "Market research, competitor analysis, data collection and reporting.", icon: "M4 20h16M6 16V10M10 16V6M14 16V8M18 16V4" },
+  { name: "Automation & Scripting", desc: "Workflow automation, bots, scrapers and custom scripts.", icon: "M12 2a4 4 0 014 4v2h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2H6a2 2 0 01-2-2v-6a2 2 0 012-2h2V6a4 4 0 014-4zM10 12h1M13 12h1" },
+];
+
+const capabilities = [
+  "Full-stack web development",
+  "Video editing & post-production",
+  "Copywriting & content creation",
+  "UI / UX design & prototyping",
+  "Technical writing & documentation",
+  "Research & data processing",
+  "SEO & digital marketing",
+  "Graphic design & branding",
+  "Automation & scripting",
+  "App development",
+];
+
+type WorkItem = {
+  title: string;
+  desc: string;
+  category: string;
+
+  image?: string;
+  youtube?: string;
+  url?: string;
+};
+
+const work: WorkItem[] = [
+  {
+    title: "Verdixt",
+    desc: "Multi-agent AI debate that argues both sides, then commits to a recommendation.",
+    category: "AI Product",
+    image: "/work/gurjeet/verdixt.webp",
+    url: "https://debate-ai-eta.vercel.app",
+  },
+  {
+    title: "Meridian",
+    desc: "Turns a Google Sheet of logged work into a client-ready monthly report with charts and PDF export.",
+    category: "Client Reporting",
+    image: "/work/gurjeet/meridian.webp",
+    url: "https://meridian-dashboard-zeta.vercel.app",
+  },
+  {
+    title: "QuoteForge",
+    desc: "GST-aware quotation builder with back-solve pricing and branded PDF export.",
+    category: "Internal Tool",
+    image: "/work/gurjeet/quoteforge.webp",
+    url: "https://quoteforge-cyan.vercel.app",
+  },
+  {
+    title: "Latency Topology Visualizer",
+    desc: "Real-time 3D globe showing latency between 15+ global exchange nodes.",
+    category: "Data Visualisation",
+    image: "/work/gurjeet/latency.webp",
+    url: "https://latency-topology-visualizer-steel.vercel.app/",
+  },
+  {
+    title: "MediaKit",
+    desc: "Browser-based media compression and format conversion - files never leave the device.",
+    category: "Media Tool",
+    image: "/work/gurjeet/mediakit.webp",
+    url: "https://media-toolkit-three.vercel.app/",
+  },
+  {
+    title: "Badlaav Campaign",
+    desc: "Documentary for a joint initiative of CEE, NDMC & HDFC Bank, with Nature Bodies' performance.",
+    category: "Documentary",
+    youtube: "1w2Vn1S_Xl8",
+    url: "https://www.youtube.com/watch?v=1w2Vn1S_Xl8",
+  },
+  {
+    title: "Watershed & Rain Water Harvesting",
+    desc: "Training documentary on watershed and rain water harvesting system construction.",
+    category: "Documentary",
+    youtube: "yuVEpRHUVAA",
+    url: "https://www.youtube.com/watch?v=yuVEpRHUVAA",
+  },
+  {
+    title: "Abhyaz Social Enterprise",
+    desc: "Promotional video for Abhyaz social enterprise.",
+    category: "Commercial",
+    youtube: "M9ECfj4VfoU",
+    url: "https://www.youtube.com/watch?v=M9ECfj4VfoU",
+  },
+  {
+    title: "All About Felix Scholarship",
+    desc: "Explainer video covering the Felix Scholarship for studying in the UK.",
+    category: "Explainer",
+    youtube: "lxwVp2SgAV0",
+    url: "https://www.youtube.com/watch?v=lxwVp2SgAV0",
+  },
+  {
+    title: "Finding the Best University",
+    desc: "The only video you need to find the best university in India and abroad.",
+    category: "Explainer",
+    youtube: "72AxsWy45z0",
+    url: "https://www.youtube.com/watch?v=72AxsWy45z0",
+  },
+  {
+    title: "Drone Views of University of Reading",
+    desc: "Drone footage of the University of Reading campus.",
+    category: "Short Vlog",
+    youtube: "Rujwj0hmEBI",
+    url: "https://www.youtube.com/watch?v=Rujwj0hmEBI",
+  },
+  {
+    title: "How to Become a Pharmacist in Dubai",
+    desc: "Step by step process, eligibility and salary breakdown for pharmacy careers in Dubai.",
+    category: "Explainer",
+    youtube: "1A5yd7HvEuA",
+    url: "https://www.youtube.com/watch?v=1A5yd7HvEuA",
+  },
+  {
+    title: "Pharmacy Career for Girls",
+    desc: "Safety, jobs and future scope - a career guide for women in pharmacy.",
+    category: "Explainer",
+    youtube: "E-606wTEpg0",
+    url: "https://www.youtube.com/watch?v=E-606wTEpg0",
+  },
+  {
+    title: "Life as a Railway Pharmacist",
+    desc: "Job profile, work nature, lifestyle, salary, facilities and promotion pathways.",
+    category: "Explainer",
+    youtube: "qhn8Mde6KUI",
+    url: "https://www.youtube.com/watch?v=qhn8Mde6KUI",
+  },
+  {
+    title: "AIIMS CRE Pharmacist Vacancy 2025",
+    desc: "Step-by-step application form filling guide for AIIMS pharmacist recruitment.",
+    category: "Tutorial",
+    youtube: "he_xhiL_3s4",
+    url: "https://www.youtube.com/watch?v=he_xhiL_3s4",
+  },
+  {
+    title: "Pharma Industry Ka Dark Reality",
+    desc: "Why freshers leave the pharma industry so quickly - an honest look at the reality.",
+    category: "Commentary",
+    youtube: "DNBpZn0ryPE",
+    url: "https://www.youtube.com/watch?v=DNBpZn0ryPE",
+  },
+  {
+    title: "University Admission Deposit with Felix Scholarship",
+    desc: "Part 1 - walking through the university admission deposit process with Felix Scholarship.",
+    category: "Vlog",
+    youtube: "bmIqW8T6fuY",
+    url: "https://www.youtube.com/shorts/bmIqW8T6fuY",
+  },
+];
+
+function ContactForm() {
+  const [form, setForm] = useState({ name: "", email: "", service: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setForm({ name: "", email: "", service: "", message: "" });
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
+  };
+
+  if (status === "sent") {
+    return (
+      <div style={{ padding: 24, background: "var(--paper)", borderRadius: 8, border: "1px solid var(--rule)" }}>
+        <p><strong>Sent!</strong> We have received your enquiry and will get back to you soon.</p>
+      </div>
+    );
+  }
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <div className="field">
+        <label htmlFor="c-name">Your name</label>
+        <input id="c-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+      </div>
+      <div className="field">
+        <label htmlFor="c-email">Email</label>
+        <input id="c-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+      </div>
+      <div className="field">
+        <label htmlFor="c-service">Service needed</label>
+        <select id="c-service" required value={form.service} onChange={(e) => setForm({ ...form, service: e.target.value })}>
+          <option value="">Select a service</option>
+          {services.map((s) => (
+            <option key={s.name} value={s.name}>{s.name}</option>
+          ))}
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div className="field">
+        <label htmlFor="c-msg">Tell us about your project</label>
+        <textarea id="c-msg" required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+      </div>
+      <button type="submit" className="btn btn-primary" style={{ justifySelf: "start" }} disabled={status === "sending"}>
+        {status === "sending" ? "Sending..." : "Send enquiry"}
+      </button>
+      {status === "error" && <p style={{ color: "#c00", fontSize: "0.85rem" }}>Failed to send. Please try again.</p>}
+    </form>
+  );
+}
+
+export default function Page() {
+  return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <EditSuite
-        clips={clips}
-        lanes={lanes}
-        total={total}
-        intro={
-          <>
-            <h1 className={styles.hero}>
-              <span className="visually-hidden">The Outcast Syndicate. </span>
-              Separate tracks.
-              <span className={styles.heroWide}>One cut.</span>
-            </h1>
-            <div className={styles.introText}>
-              <p>
-                Four people working across research, writing, video editing, interface design and code. Each keeps
-                their own track. Every piece of work here names the person who made it.
-              </p>
-              <dl className={styles.counts}>
-                <div>
-                  <dt className="label">Tracks</dt>
-                  <dd>{people.length}</dd>
-                </div>
-                <div>
-                  <dt className="label">Films</dt>
-                  <dd>{films}</dd>
-                </div>
-                <div>
-                  <dt className="label">Builds</dt>
-                  <dd>{builds}</dd>
-                </div>
-              </dl>
-              <div className={styles.ctas}>
-                <Link href="/work" className={styles.primary}>
-                  See all work
-                </Link>
-                <Link href="/contact" className={styles.secondary}>
-                  Start a brief
-                </Link>
-              </div>
-            </div>
-          </>
-        }
-      />
+      <FloatingShapes />
 
-      <section className={`wrap ${styles.section}`} aria-labelledby="tracks-h">
-        <header className={styles.sectionHead}>
-          <span className="label">The tracks</span>
-          <h2 id="tracks-h" className={styles.h2}>
-            Four people. <span>Four folios.</span>
-          </h2>
-          <p className={styles.lede}>
-            Each person has a folio built around their own discipline. Two tracks are armed and waiting for their
-            first pieces.
-          </p>
-        </header>
-        <TrackRoster headingLevel={3} />
-      </section>
-
-      <section className={`wrap ${styles.section}`} aria-labelledby="cuts-h">
-        <header className={styles.sectionHead}>
-          <span className="label">From the cut</span>
-          <h2 id="cuts-h" className={styles.h2}>
-            One film. <span>One build.</span>
-          </h2>
-        </header>
-
-        <article className={styles.featureFilm}>
-          <div className={styles.featureMedia}>
-            <VideoFacade
-              id={badlaav.cover.id}
-              title={badlaav.title}
-              poster={posterUrl(badlaav.cover)}
-              aspect="16:9"
-              runtime={badlaav.runtime}
-              sizes="(min-width: 900px) 64vw, 100vw"
-            />
+      {/* Nav */}
+      <nav className="nav">
+        <div className="nav-inner">
+          <a href="#" className="nav-brand">
+            <svg className="nav-logo" viewBox="0 0 32 32" aria-hidden="true">
+              <rect width="32" height="32" rx="8" fill="#1546d9"/>
+              <circle cx="8" cy="8" r="4" fill="#f9b318" opacity="0.6"/>
+              <text x="16" y="22.5" fontFamily="system-ui" fontSize="16" fontWeight="800" fill="#edece6" textAnchor="middle" letterSpacing="-0.5">OS</text>
+            </svg>
+            The Outcast Syndicate
+          </a>
+          <div className="nav-links">
+            <a href="#services">Services</a>
+            <a href="#work">Work</a>
+            <a href="#team">Team</a>
+            <a href="#contact">Contact</a>
           </div>
-          <div className={styles.featureText}>
-            <SlugLine items={["UK", "Film", badlaav.strand, badlaav.runtime]} />
-            <h3 className={styles.featureTitle}>
-              <Link href={`/work/${badlaav.slug}`}>{badlaav.title}</Link>
-            </h3>
-            {badlaav.subtitle && <p className={styles.featureSub}>{badlaav.subtitle}</p>}
-            <p className={styles.featureNote}>Published on YouTube by {badlaav.channel.label}.</p>
-            <Credits project={badlaav} />
-          </div>
-        </article>
-
-        <article className={styles.featureBuild}>
-          <div className={styles.featureText}>
-            <SlugLine items={["GS", "Build", meridian.category, String(meridian.year)]} />
-            <h3 className={styles.featureTitle}>
-              <Link href={`/work/${meridian.slug}`}>{meridian.title}</Link>
-            </h3>
-            <p className={styles.featureSub}>{meridian.strapline}</p>
-            <p className={styles.featureNote}>{meridian.summary}</p>
-            <Credits project={meridian} />
-          </div>
-          <div className={styles.buildStack}>
-            <BrowserFrame
-              image={meridian.cover}
-              url={meridian.links[0].href}
-              status={meridian.status}
-              sizes="(min-width: 900px) 50vw, 100vw"
-            />
-            {meridian.gallery && (
-              <div className={styles.buildShots}>
-                {meridian.gallery.slice(1, 3).map((g) => (
-                  <BrowserFrame key={g.src} image={g} sizes="(min-width: 900px) 22vw, 50vw" />
-                ))}
-              </div>
-            )}
-          </div>
-        </article>
-      </section>
-
-      <section className={`wrap ${styles.section}`} aria-labelledby="brief-h">
-        <div className={styles.brief}>
-          <h2 id="brief-h" className={styles.h2}>
-            Bring us <span>the raw footage.</span>
-          </h2>
-          <p className={styles.lede}>
-            A research question, a script, an edit or a product. Tell us what you have and which tracks you need.
-          </p>
-          <Link href="/contact" className={styles.primary}>
-            Start a brief
-          </Link>
         </div>
-      </section>
+      </nav>
+
+      <div className="wrap">
+        {/* Hero */}
+        <section className="hero">
+          <h1>We build. <em>You ship.</em></h1>
+          <p className="hero-sub">
+            A freelance team for websites, video editing, copywriting, data entry, technical writing and more.
+            Tell us what you need - we handle the rest.
+          </p>
+          <div className="hero-ctas">
+            <a href="#contact" className="btn btn-primary">Get in touch ↗</a>
+            <a href="#work" className="btn btn-secondary">See our work</a>
+          </div>
+        </section>
+
+        <div className="watermark" aria-hidden="true">BUILD / SHIP / CREATE / REPEAT</div>
+
+        {/* Services */}
+        <section id="services" className="section">
+          <p className="section-label">What we do</p>
+          <h2 className="section-title">Services</h2>
+          <p className="section-desc">
+            Everything from a landing page to a documentary edit. Pick what you need, or tell us and we will figure it out.
+          </p>
+          <div className="carousel">
+            <div className="carousel-track services-track">
+              {[...services, ...services].map((s, i) => (
+                <div key={`${s.name}-${i}`} className="service-card">
+                  <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={s.icon} />
+                  </svg>
+                  <h3>{s.name}</h3>
+                  <p>{s.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="watermark" aria-hidden="true">CODE / EDIT / DESIGN / LAUNCH</div>
+
+        {/* Work */}
+        <section id="work" className="section">
+          <p className="section-label">Our work</p>
+          <h2 className="section-title">Projects</h2>
+          <p className="section-desc">
+            Web apps, tools, documentaries, explainers and more - all made by us.
+          </p>
+          <div className="carousel">
+            <div className="carousel-track work-track">
+            {[...work, ...work].map((w, i) => (
+              <a
+                key={`${w.title}-${i}`}
+                className="work-card"
+                href={w.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {w.image && (
+                  <Image src={w.image} alt={w.title} width={600} height={375} />
+                )}
+                {w.youtube && !w.image && (
+                  <img
+                    src={`https://i.ytimg.com/vi/${w.youtube}/maxresdefault.jpg`}
+                    alt={w.title}
+                    width={600}
+                    height={375}
+                    loading="lazy"
+                  />
+                )}
+                <div className="work-card-body">
+                  <p className="work-card-meta">{w.category}</p>
+                  <h3>{w.title}</h3>
+                  <p>{w.desc}</p>
+                </div>
+              </a>
+            ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="watermark" aria-hidden="true">PIXEL / FRAME / SCRIPT / DEPLOY</div>
+
+        {/* Team */}
+        <section id="team" className="section">
+          <p className="section-label">Who we are</p>
+          <h2 className="section-title">The Outcast Syndicate</h2>
+          <p className="section-desc">
+            A four-person freelance agency. We cover everything from code to cameras. No middlemen - the people who take the brief are the people who do the work.
+          </p>
+          <div className="capabilities-list">
+            {capabilities.map((c) => (
+              <span key={c} className="capability-tag">{c}</span>
+            ))}
+          </div>
+        </section>
+
+        <div className="watermark" aria-hidden="true">OUTCAST / SYNDICATE / STUDIO</div>
+
+        {/* Contact */}
+        <section id="contact" className="section">
+          <p className="section-label">Get started</p>
+          <h2 className="section-title">Contact us</h2>
+          <p className="section-desc">
+            We usually reply within a day.
+          </p>
+          <ContactForm />
+        </section>
+
+        {/* Footer */}
+        <footer className="footer">
+          <div className="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/dpa">Data Processing</a>
+            <a href="/refund">Refund Policy</a>
+            <a href="/support">Contact & Support</a>
+            <a href="/faq">FAQ</a>
+          </div>
+          <p>© {new Date().getFullYear()} The Outcast Syndicate</p>
+          <p className="easter-egg-line">
+            Curious who made this?{" "}
+            <a
+              href="https://gurjeet.dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="easter-egg-link"
+            >
+              My site is way better than this one.
+            </a>
+          </p>
+        </footer>
+      </div>
     </>
   );
 }
