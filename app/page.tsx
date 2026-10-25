@@ -278,7 +278,7 @@ function ContactForm() {
   );
 }
 
-function useAutoScroll(ref: React.RefObject<HTMLDivElement | null>, speed = 0.5) {
+function useAutoScroll(ref: React.RefObject<HTMLDivElement | null>, speed = 0.4) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -286,26 +286,33 @@ function useAutoScroll(ref: React.RefObject<HTMLDivElement | null>, speed = 0.5)
     if (!mq.matches) return;
     let raf: number;
     let paused = false;
+    let resumeTimer: ReturnType<typeof setTimeout>;
+    const half = () => Math.floor(el.scrollWidth / 2);
     const step = () => {
-      if (!paused && el.scrollWidth > el.clientWidth) {
+      if (!paused) {
         el.scrollLeft += speed;
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
-          el.scrollLeft = 0;
+        if (el.scrollLeft >= half()) {
+          el.scrollLeft -= half();
         }
       }
       raf = requestAnimationFrame(step);
     };
-    const pause = () => { paused = true; };
-    const resume = () => { paused = false; };
-    el.addEventListener("pointerdown", pause);
-    el.addEventListener("pointerup", resume);
-    el.addEventListener("pointerleave", resume);
+    const onTouch = () => {
+      paused = true;
+      clearTimeout(resumeTimer);
+    };
+    const onRelease = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => { paused = false; }, 2000);
+    };
+    el.addEventListener("touchstart", onTouch, { passive: true });
+    el.addEventListener("touchend", onRelease, { passive: true });
     raf = requestAnimationFrame(step);
     return () => {
       cancelAnimationFrame(raf);
-      el.removeEventListener("pointerdown", pause);
-      el.removeEventListener("pointerup", resume);
-      el.removeEventListener("pointerleave", resume);
+      clearTimeout(resumeTimer);
+      el.removeEventListener("touchstart", onTouch);
+      el.removeEventListener("touchend", onRelease);
     };
   }, [ref, speed]);
 }
