@@ -252,6 +252,30 @@ ul { list-style: none; padding: 0; }
   color: var(--text-grey);
   line-height: 1.5;
 }
+/* Show more / collapse on mobile */
+.show-more-btn {
+  display: none;
+  margin-top: 16px;
+  padding: 10px 24px;
+  background: transparent;
+  border: 1.5px solid var(--rule);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-grey);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+.show-more-btn:hover { color: var(--ink); border-color: var(--ink); }
+@media (max-width: 768px) {
+  .show-more-btn { display: inline-block; }
+  .services-grid.collapsed > .service-card:nth-child(n+7) { display: none; }
+  .work-grid.collapsed > .work-card:nth-child(n+5) { display: none; }
+}
+
 /* Mobile: compact horizontal service card */
 @media (max-width: 560px) {
   .service-card {

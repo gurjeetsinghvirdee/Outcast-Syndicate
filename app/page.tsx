@@ -41,7 +41,7 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.15 });
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.05, rootMargin: "0px 0px 80px 0px" });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
@@ -282,6 +282,8 @@ function ContactForm() {
 
 export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [showAllWork, setShowAllWork] = useState(false);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -351,7 +353,7 @@ export default function Page() {
           <p className="section-desc">
             Everything from a landing page to a documentary edit. Pick what you need, or tell us and we will figure it out.
           </p>
-          <div className="services-grid">
+          <div className={`services-grid${showAllServices ? "" : " collapsed"}`}>
             {services.map((s) => (
               <div key={s.name} className="service-card">
                 <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -364,6 +366,9 @@ export default function Page() {
               </div>
             ))}
           </div>
+          <button className="show-more-btn" onClick={() => setShowAllServices(!showAllServices)}>
+            {showAllServices ? "Show less" : `Show all ${services.length} services`}
+          </button>
         </section>
         </Reveal>
 
@@ -377,7 +382,7 @@ export default function Page() {
           <p className="section-desc">
             Web apps, tools, documentaries, explainers and more - all made by us.
           </p>
-          <div className="work-grid">
+          <div className={`work-grid${showAllWork ? "" : " collapsed"}`}>
             {work.map((w) => (
               <a
                 key={w.title}
@@ -406,6 +411,9 @@ export default function Page() {
               </a>
             ))}
           </div>
+          <button className="show-more-btn" onClick={() => setShowAllWork(!showAllWork)}>
+            {showAllWork ? "Show less" : `Show all ${work.length} projects`}
+          </button>
         </section>
         </Reveal>
 
