@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback, type ReactNode } from "react"
 import Image from "next/image";
 
 
+
 function FloatingShapes() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
@@ -278,51 +279,9 @@ function ContactForm() {
   );
 }
 
-function useAutoScroll(ref: React.RefObject<HTMLDivElement | null>, speed = 0.4) {
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const mq = window.matchMedia("(max-width: 768px)");
-    if (!mq.matches) return;
-    let raf: number;
-    let paused = false;
-    let resumeTimer: ReturnType<typeof setTimeout>;
-    const half = () => Math.floor(el.scrollWidth / 2);
-    const step = () => {
-      if (!paused) {
-        el.scrollLeft += speed;
-        if (el.scrollLeft >= half()) {
-          el.scrollLeft -= half();
-        }
-      }
-      raf = requestAnimationFrame(step);
-    };
-    const onTouch = () => {
-      paused = true;
-      clearTimeout(resumeTimer);
-    };
-    const onRelease = () => {
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(() => { paused = false; }, 2000);
-    };
-    el.addEventListener("touchstart", onTouch, { passive: true });
-    el.addEventListener("touchend", onRelease, { passive: true });
-    raf = requestAnimationFrame(step);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(resumeTimer);
-      el.removeEventListener("touchstart", onTouch);
-      el.removeEventListener("touchend", onRelease);
-    };
-  }, [ref, speed]);
-}
 
 export default function Page() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const servicesRef = useRef<HTMLDivElement>(null);
-  const workRef = useRef<HTMLDivElement>(null);
-  useAutoScroll(servicesRef);
-  useAutoScroll(workRef);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
@@ -392,18 +351,18 @@ export default function Page() {
           <p className="section-desc">
             Everything from a landing page to a documentary edit. Pick what you need, or tell us and we will figure it out.
           </p>
-          <div className="carousel">
-            <div className="carousel-track services-track" ref={servicesRef}>
-              {[...services, ...services].map((s, i) => (
-                <div key={`${s.name}-${i}`} className="service-card">
-                  <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={s.icon} />
-                  </svg>
+          <div className="services-grid">
+            {services.map((s) => (
+              <div key={s.name} className="service-card">
+                <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d={s.icon} />
+                </svg>
+                <div>
                   <h3>{s.name}</h3>
                   <p>{s.desc}</p>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </section>
         </Reveal>
@@ -418,11 +377,10 @@ export default function Page() {
           <p className="section-desc">
             Web apps, tools, documentaries, explainers and more - all made by us.
           </p>
-          <div className="carousel">
-            <div className="carousel-track work-track" ref={workRef}>
-            {[...work, ...work].map((w, i) => (
+          <div className="work-grid">
+            {work.map((w) => (
               <a
-                key={`${w.title}-${i}`}
+                key={w.title}
                 className="work-card"
                 href={w.url}
                 target="_blank"
@@ -447,7 +405,6 @@ export default function Page() {
                 </div>
               </a>
             ))}
-            </div>
           </div>
         </section>
         </Reveal>
