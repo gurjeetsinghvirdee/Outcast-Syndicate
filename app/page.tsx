@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback, type ReactNode } from "react";
 import Image from "next/image";
 
 
@@ -33,6 +33,26 @@ function FloatingShapes() {
     </div>
   );
 }
+
+function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } }, { threshold: 0.15 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return <div ref={ref} className={`reveal ${visible ? "revealed" : ""} ${className}`}>{children}</div>;
+}
+
+const stats = [
+  { value: "50+", label: "Projects delivered" },
+  { value: "4", label: "Team members" },
+  { value: "12+", label: "Services offered" },
+  { value: "24h", label: "Avg. response time" },
+];
 
 const services = [
   { name: "Website Development", desc: "Responsive websites, landing pages, e-commerce stores and web apps.", icon: "M10 4h4v4h-4zM4 10h4v4H4zM16 10h4v4h-4zM10 16h4v4h-4zM10 10h4v4h-4z" },
@@ -258,7 +278,47 @@ function ContactForm() {
   );
 }
 
+function useAutoScroll(ref: React.RefObject<HTMLDivElement | null>, speed = 0.5) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const mq = window.matchMedia("(max-width: 768px)");
+    if (!mq.matches) return;
+    let raf: number;
+    let paused = false;
+    const step = () => {
+      if (!paused && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft += speed;
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth) {
+          el.scrollLeft = 0;
+        }
+      }
+      raf = requestAnimationFrame(step);
+    };
+    const pause = () => { paused = true; };
+    const resume = () => { paused = false; };
+    el.addEventListener("pointerdown", pause);
+    el.addEventListener("pointerup", resume);
+    el.addEventListener("pointerleave", resume);
+    raf = requestAnimationFrame(step);
+    return () => {
+      cancelAnimationFrame(raf);
+      el.removeEventListener("pointerdown", pause);
+      el.removeEventListener("pointerup", resume);
+      el.removeEventListener("pointerleave", resume);
+    };
+  }, [ref, speed]);
+}
+
 export default function Page() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const workRef = useRef<HTMLDivElement>(null);
+  useAutoScroll(servicesRef);
+  useAutoScroll(workRef);
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
   return (
     <>
       <FloatingShapes />
@@ -274,11 +334,16 @@ export default function Page() {
             </svg>
             The Outcast Syndicate
           </a>
-          <div className="nav-links">
-            <a href="#services">Services</a>
-            <a href="#work">Work</a>
-            <a href="#team">Team</a>
-            <a href="#contact">Contact</a>
+          <button className="nav-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              {menuOpen ? <><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></> : <><line x1="3" y1="7" x2="21" y2="7"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="17" x2="21" y2="17"/></>}
+            </svg>
+          </button>
+          <div className={`nav-links${menuOpen ? " open" : ""}`}>
+            <a href="#services" onClick={closeMenu}>Services</a>
+            <a href="#work" onClick={closeMenu}>Work</a>
+            <a href="#team" onClick={closeMenu}>Team</a>
+            <a href="#contact" onClick={closeMenu}>Contact</a>
           </div>
         </div>
       </nav>
@@ -286,6 +351,7 @@ export default function Page() {
       <div className="wrap">
         {/* Hero */}
         <section className="hero">
+          <span className="hero-badge">Freelance studio for makers</span>
           <h1>We build. <em>You ship.</em></h1>
           <p className="hero-sub">
             A freelance team for websites, video editing, copywriting, data entry, technical writing and more.
@@ -297,9 +363,22 @@ export default function Page() {
           </div>
         </section>
 
+        {/* Stats */}
+        <Reveal>
+          <div className="stats-bar">
+            {stats.map((s) => (
+              <div key={s.label} className="stat">
+                <span className="stat-value">{s.value}</span>
+                <span className="stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
         <div className="watermark" aria-hidden="true">BUILD / SHIP / CREATE / REPEAT</div>
 
         {/* Services */}
+        <Reveal>
         <section id="services" className="section">
           <p className="section-label">What we do</p>
           <h2 className="section-title">Services</h2>
@@ -307,7 +386,7 @@ export default function Page() {
             Everything from a landing page to a documentary edit. Pick what you need, or tell us and we will figure it out.
           </p>
           <div className="carousel">
-            <div className="carousel-track services-track">
+            <div className="carousel-track services-track" ref={servicesRef}>
               {[...services, ...services].map((s, i) => (
                 <div key={`${s.name}-${i}`} className="service-card">
                   <svg className="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -320,10 +399,12 @@ export default function Page() {
             </div>
           </div>
         </section>
+        </Reveal>
 
         <div className="watermark" aria-hidden="true">CODE / EDIT / DESIGN / LAUNCH</div>
 
         {/* Work */}
+        <Reveal>
         <section id="work" className="section">
           <p className="section-label">Our work</p>
           <h2 className="section-title">Projects</h2>
@@ -331,7 +412,7 @@ export default function Page() {
             Web apps, tools, documentaries, explainers and more - all made by us.
           </p>
           <div className="carousel">
-            <div className="carousel-track work-track">
+            <div className="carousel-track work-track" ref={workRef}>
             {[...work, ...work].map((w, i) => (
               <a
                 key={`${w.title}-${i}`}
@@ -362,10 +443,12 @@ export default function Page() {
             </div>
           </div>
         </section>
+        </Reveal>
 
         <div className="watermark" aria-hidden="true">PIXEL / FRAME / SCRIPT / DEPLOY</div>
 
         {/* Team */}
+        <Reveal>
         <section id="team" className="section">
           <p className="section-label">Who we are</p>
           <h2 className="section-title">The Outcast Syndicate</h2>
@@ -378,10 +461,19 @@ export default function Page() {
             ))}
           </div>
         </section>
+        </Reveal>
 
-        <div className="watermark" aria-hidden="true">OUTCAST / SYNDICATE / STUDIO</div>
+        {/* Marquee */}
+        <div className="marquee" aria-hidden="true">
+          <div className="marquee-inner">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <span key={i}>WEBSITES &bull; VIDEO &bull; COPY &bull; DESIGN &bull; CODE &bull; SEO &bull; APPS &bull; RESEARCH &bull;&nbsp;</span>
+            ))}
+          </div>
+        </div>
 
         {/* Contact */}
+        <Reveal>
         <section id="contact" className="section">
           <p className="section-label">Get started</p>
           <h2 className="section-title">Contact us</h2>
@@ -390,6 +482,7 @@ export default function Page() {
           </p>
           <ContactForm />
         </section>
+        </Reveal>
 
         {/* Footer */}
         <footer className="footer">
