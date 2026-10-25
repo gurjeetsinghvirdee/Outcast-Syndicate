@@ -1,0 +1,107 @@
+.matrixSection,
+.rules {
+  display: grid;
+  gap: 20px;
+  padding-top: clamp(40px, 6vw, 80px);
+}
+
+.scroll {
+  overflow-x: auto;
+  border-top: 1px solid var(--ink);
+}
+
+.matrix {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 760px;
+}
+
+.matrix thead th {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-grey);
+  text-align: center;
+  vertical-align: bottom;
+  padding: 12px 6px;
+  border-bottom: 1px solid var(--rule-strong);
+  font-variation-settings: "wdth" 87.5;
+}
+
+.matrix thead th:first-child {
+  text-align: left;
+}
+
+.matrix tbody th {
+  text-align: left;
+  font-weight: 700;
+  padding: 14px 12px 14px 0;
+  white-space: nowrap;
+}
+
+.matrix tbody th a {
+  text-decoration: none;
+}
+
+.matrix tbody th a:hover {
+  text-decoration: underline;
+}
+
+.matrix td {
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+  border-left: 1px solid var(--rule);
+}
+
+.matrix tbody th {
+  border-bottom: 1px solid var(--rule);
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  border: 1px solid var(--ink);
+  padding: 1px 5px;
+  margin-right: 6px;
+  font-variation-settings: "wdth" 87.5;
+}
+
+/* A filled clip marks a discipline. */
+.on {
+  display: inline-block;
+  width: 70%;
+  max-width: 64px;
+  height: 18px;
+  background: var(--ink);
+  vertical-align: middle;
+}
+
+.ruleList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink);
+}
+
+.ruleList li {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 16px;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ruleList p {
+  max-width: 60ch;
+  font-size: var(--step-1);
+  line-height: 1.35;
+}
+
+.ruleNo {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  padding-top: 0.35em;
+  font-variation-settings: "wdth" 87.5;
+}

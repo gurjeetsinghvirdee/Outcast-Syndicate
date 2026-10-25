@@ -1,0 +1,148 @@
+.ledger {
+  display: grid;
+  gap: 20px;
+  border-top: 3px double var(--ink);
+  padding-top: 20px;
+}
+
+.ledgerHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.h2 {
+  font-size: var(--step-3);
+  font-variation-settings: "wdth" 64;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-transform: uppercase;
+  font-variation-settings: "wdth" 87.5;
+}
+
+.count span {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: var(--step-3);
+  font-variation-settings: "wdth" 125;
+  margin-right: 6px;
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  background:
+    linear-gradient(var(--paper), var(--paper)) padding-box;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-grey);
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ink);
+  font-variation-settings: "wdth" 87.5;
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 64px;
+  font-family: var(--font-mono);
+  font-variation-settings: "wdth" 87.5;
+}
+
+.table td {
+  padding: 18px 14px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule);
+}
+
+/* Ruled like a notebook page. */
+.emptyRow td {
+  background: repeating-linear-gradient(to bottom, transparent 0 27px, rgba(17, 17, 17, 0.08) 27px 28px);
+  color: var(--text-grey);
+}
+
+.emptyRow p {
+  max-width: 60ch;
+  line-height: 28px;
+}
+
+.emptyTitle {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.margin {
+  display: grid;
+  gap: 6px;
+  max-width: 48ch;
+  border-left: 3px solid var(--purple);
+  padding-left: 14px;
+}
+
+.studyTitle {
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.sources {
+  margin: 0;
+  padding-left: 1.1em;
+  font-size: var(--step--1);
+}
+
+/* On phones each study becomes a stacked entry with its own labels. */
+@media (max-width: 640px) {
+  .table {
+    min-width: 0;
+  }
+
+  .table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .table tr,
+  .table td {
+    display: block;
+    width: auto !important;
+  }
+
+  .table td {
+    padding: 8px 0;
+    border-bottom: 0;
+  }
+
+  .table tr {
+    border-bottom: 1px solid var(--rule-strong);
+    padding-block: 10px;
+  }
+
+  .table td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--step--2);
+    text-transform: uppercase;
+    color: var(--text-grey);
+    font-variation-settings: "wdth" 87.5;
+  }
+}

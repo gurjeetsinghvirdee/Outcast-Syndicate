@@ -1,0 +1,316 @@
+.totals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--ink);
+  width: fit-content;
+}
+
+.totals div {
+  padding: 8px 24px 0 0;
+  display: grid;
+  gap: 2px;
+}
+
+.totals div + div {
+  border-left: 1px solid var(--rule);
+  padding-left: 16px;
+}
+
+.totals dd {
+  margin: 0;
+  font-weight: 800;
+  font-size: var(--step-2);
+  line-height: 1;
+  font-variation-settings: "wdth" 70;
+  font-variant-numeric: tabular-nums;
+}
+
+.program {
+  display: grid;
+  gap: 20px;
+  border-top: 1px solid var(--ink);
+  padding-top: 20px;
+}
+
+.programMedia {
+  min-width: 0;
+}
+
+.programText {
+  display: grid;
+  gap: 10px;
+  align-content: end;
+}
+
+.programTitle {
+  font-size: var(--step-3);
+  font-variation-settings: "wdth" 64;
+}
+
+.programTitle a {
+  text-decoration: none;
+}
+
+.section {
+  padding-top: clamp(56px, 8vw, 110px);
+  display: grid;
+  gap: 20px;
+}
+
+.h2 {
+  font-size: var(--step-3);
+  font-variation-settings: "wdth" 64;
+}
+
+.h2 span {
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  font-weight: 400;
+  vertical-align: middle;
+  border: 1px solid var(--ink);
+  padding: 2px 8px;
+  letter-spacing: 0;
+  font-variation-settings: "wdth" 87.5;
+}
+
+/* Edit decision list */
+.edl {
+  display: grid;
+  gap: 0;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+}
+
+.edlTop {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.edlHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 28px;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variation-settings: "wdth" 87.5;
+}
+
+.strands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.strands button {
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  padding: 6px 9px;
+  border: 1px solid var(--rule-strong);
+  background: transparent;
+  cursor: pointer;
+  font-variation-settings: "wdth" 87.5;
+}
+
+.strands button[aria-pressed="true"] {
+  background: var(--lime);
+  border-color: var(--ink);
+}
+
+.edlScroll {
+  overflow-x: auto;
+}
+
+.edlTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  font-variation-settings: "wdth" 87.5;
+  min-width: 680px;
+}
+
+.edlTable th {
+  text-align: left;
+  font-weight: 400;
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  color: var(--text-grey);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--rule-strong);
+}
+
+.edlTable td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+
+.edlTable tr:hover td {
+  background: var(--ground);
+}
+
+.edlTitle {
+  white-space: normal !important;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: var(--step-0);
+}
+
+.edlTitle a {
+  text-decoration: none;
+}
+
+.edlTitle a:hover {
+  text-decoration: underline;
+}
+
+/* Contact sheet */
+.sheet {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.frame {
+  display: grid;
+  gap: 8px;
+  text-decoration: none;
+  position: relative;
+}
+
+.frameImg {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  background: var(--monitor);
+  overflow: hidden;
+  border: 1px solid var(--ink);
+}
+
+.frameImg img {
+  object-fit: cover;
+}
+
+.frame:hover .frameImg {
+  outline: 4px solid var(--lime);
+  outline-offset: -4px;
+}
+
+.frameNo {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  background: var(--ground);
+  padding: 2px 6px;
+  font-variation-settings: "wdth" 87.5;
+}
+
+.frameCap {
+  font-weight: 700;
+  font-size: var(--step--1);
+  line-height: 1.2;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.frameCap span {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-variation-settings: "wdth" 87.5;
+}
+
+/* Writing desk */
+.desk {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  border-top: 1px solid var(--ink);
+}
+
+.desk article {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  padding: 16px 20px 20px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.desk article[data-empty] {
+  color: var(--text-grey);
+}
+
+.deskCount {
+  font-weight: 800;
+  font-size: var(--step-4);
+  line-height: 0.85;
+  font-variation-settings: "wdth" 62;
+  color: var(--ink);
+}
+
+.desk article[data-empty] .deskCount {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--grey);
+}
+
+@media (min-width: 900px) {
+  .program {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  }
+
+  .sheet {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .desk article + article {
+    border-left: 1px solid var(--rule);
+    padding-left: 20px;
+  }
+}
+
+.pieces {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.pieces a {
+  font-weight: 700;
+}
+
+/* On phones, keep what varies (event, title, strand, duration) and drop the
+   columns that are the same on every row of this list. */
+@media (max-width: 640px) {
+  .edlTable {
+    min-width: 0;
+  }
+
+  .edlTable th:nth-child(2),
+  .edlTable td:nth-child(2),
+  .edlTable th:nth-child(3),
+  .edlTable td:nth-child(3),
+  .edlTable th:nth-child(4),
+  .edlTable td:nth-child(4),
+  .edlTable th:nth-child(7),
+  .edlTable td:nth-child(7) {
+    display: none;
+  }
+
+  .edlTable th,
+  .edlTable td {
+    padding-inline: 8px;
+  }
+
+  .edlTable td:nth-child(6) {
+    white-space: normal;
+    font-size: var(--step--2);
+  }
+}

@@ -1,0 +1,160 @@
+.form {
+  display: grid;
+  gap: 22px;
+  border-top: 1px solid var(--ink);
+  padding-top: 24px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.field input,
+.field select,
+.field textarea {
+  font: inherit;
+  font-size: var(--step-0);
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
+  padding: 12px;
+  width: 100%;
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--ink);
+}
+
+.field textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.tracks {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 6px;
+}
+
+.tracks legend {
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: baseline;
+  padding: 12px;
+  border: 1px solid var(--rule-strong);
+  cursor: pointer;
+}
+
+.track:has(input:checked) {
+  background: var(--lime);
+  border-color: var(--ink);
+}
+
+.track input {
+  accent-color: var(--ink);
+  width: 16px;
+  height: 16px;
+  grid-row: span 2;
+  align-self: start;
+  margin: 2px 0 0;
+}
+
+.trackName {
+  font-weight: 700;
+}
+
+.trackWho {
+  font-size: var(--step--1);
+  color: var(--text-grey);
+}
+
+.track:has(input:checked) .trackWho {
+  color: var(--ink);
+}
+
+.error {
+  border-left: 3px solid var(--ink);
+  padding: 8px 12px;
+  background: var(--paper);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.submit,
+.copy {
+  font-weight: 700;
+  padding: 12px 18px;
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+
+.submit {
+  background: var(--ink);
+  color: var(--ground);
+}
+
+.submit:hover {
+  background: var(--lime);
+  color: var(--ink);
+}
+
+.copy {
+  background: transparent;
+}
+
+.copy:hover {
+  background: var(--paper);
+}
+
+.preview summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--step--2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-variation-settings: "wdth" 87.5;
+}
+
+.preview pre {
+  margin-top: 10px;
+  padding: 14px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+  font-variation-settings: "wdth" 87.5;
+}
+
+.note {
+  color: var(--text-grey);
+  font-size: var(--step--1);
+  max-width: 64ch;
+}

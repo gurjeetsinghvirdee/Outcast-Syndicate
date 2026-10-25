@@ -1,0 +1,37 @@
+/* Page-level patterns shared by the index pages (work, people, about, contact). */
+.pageHead {
+  display: grid;
+  gap: 16px;
+  padding-block: clamp(40px, 7vw, 96px) clamp(28px, 4vw, 48px);
+  max-width: 1100px;
+}
+
+.title {
+  font-size: var(--step-4);
+  line-height: 0.84;
+  letter-spacing: -0.04em;
+  font-variation-settings: "wdth" 62;
+}
+
+.title span {
+  font-weight: 300;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.06em;
+}
+
+.lede {
+  font-size: var(--step-1);
+  line-height: 1.35;
+  max-width: 46ch;
+}
+
+.section {
+  padding-top: clamp(56px, 8vw, 110px);
+  display: grid;
+  gap: 24px;
+}
+
+.h2 {
+  font-size: var(--step-3);
+  font-variation-settings: "wdth" 64;
+}
